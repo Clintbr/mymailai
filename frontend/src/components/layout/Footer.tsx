@@ -81,7 +81,7 @@ export const Footer: React.FC = () => {
 
           {/* Swagger / OpenAPI Spec Link */}
           <a
-            href="http://localhost:8080/swagger-ui.html"
+            href="https://mymailai.onrender.com/swagger-ui.html"
             target="_blank"
             rel="noreferrer"
             className="flex items-center gap-1 text-indigo-400 hover:text-indigo-300 transition-colors"
