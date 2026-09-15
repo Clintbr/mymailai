@@ -75,11 +75,11 @@ export const AiReplyAssistant: React.FC<AiReplyAssistantProps> = ({
   };
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/80 p-5 backdrop-blur-md shadow-xl space-y-4">
+    <div className="rounded-xl border border-slate-800 bg-slate-900/80 p-4 sm:p-5 backdrop-blur-md shadow-xl space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-3 gap-2">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+          <div className="w-8 h-8 rounded-lg bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
             <MessageSquare className="w-4 h-4" />
           </div>
           <div>
@@ -93,7 +93,7 @@ export const AiReplyAssistant: React.FC<AiReplyAssistantProps> = ({
         </div>
 
         {/* Human in the loop badge */}
-        <div className="flex items-center gap-1.5 text-[11px] font-medium text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-2.5 py-1 rounded-full">
+        <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-medium text-emerald-400 bg-emerald-950/40 border border-emerald-800/40 px-2.5 py-1 rounded-full self-start sm:self-auto">
           <ShieldCheck className="w-3.5 h-3.5" />
           <span>Human-in-the-loop Protected</span>
         </div>
@@ -105,17 +105,17 @@ export const AiReplyAssistant: React.FC<AiReplyAssistantProps> = ({
           <label className="text-xs font-semibold text-slate-300">
             Tone Selection
           </label>
-          <span className="text-[11px] text-slate-400">
+          <span className="text-[10px] sm:text-[11px] text-slate-400">
             Adapts vocabulary & formalities
           </span>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
           {tones.map((t) => (
             <button
               key={t.id}
               onClick={() => setTone(t.id)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+              className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-medium transition-all ${
                 tone === t.id
                   ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/20 font-semibold'
                   : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200 border border-slate-700/60'
@@ -130,7 +130,7 @@ export const AiReplyAssistant: React.FC<AiReplyAssistantProps> = ({
         <div>
           <input
             type="text"
-            placeholder="Optional prompt guidance (e.g. 'I am free on Friday at 3pm', 'Ask for the invoice number')..."
+            placeholder="Optional prompt guidance (e.g. 'I am free on Friday at 3pm')..."
             value={customInstructions}
             onChange={(e) => setCustomInstructions(e.target.value)}
             className="w-full bg-slate-800/80 border border-slate-700/70 rounded-lg px-3.5 py-2 text-xs text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-all"
@@ -142,7 +142,7 @@ export const AiReplyAssistant: React.FC<AiReplyAssistantProps> = ({
           <button
             onClick={handleGenerate}
             disabled={isGenerating}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs shadow-lg shadow-indigo-600/30 transition-all disabled:opacity-50 active:scale-95"
+            className="flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs shadow-lg shadow-indigo-600/30 transition-all disabled:opacity-50 active:scale-95"
           >
             <Sparkles className="w-3.5 h-3.5 text-indigo-200" />
             <span>{isGenerating ? 'Drafting with Gemini...' : hasGenerated ? 'Regenerate Draft' : 'Generate Reply Draft'}</span>
@@ -153,13 +153,13 @@ export const AiReplyAssistant: React.FC<AiReplyAssistantProps> = ({
       {/* Reply Draft Editor Area */}
       {hasGenerated && (
         <div className="space-y-3 pt-3 border-t border-slate-800">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
             <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-300">
               <Edit3 className="w-3.5 h-3.5 text-indigo-400" />
               <span>Editable Response Draft</span>
             </div>
             {aiReasoning && (
-              <span className="text-[11px] text-slate-400 italic">
+              <span className="text-[11px] text-slate-400 italic truncate max-w-sm">
                 {aiReasoning}
               </span>
             )}
@@ -169,7 +169,7 @@ export const AiReplyAssistant: React.FC<AiReplyAssistantProps> = ({
             rows={7}
             value={replyDraft}
             onChange={(e) => setReplyDraft(e.target.value)}
-            className="w-full bg-slate-950/80 border border-indigo-500/40 rounded-xl p-3.5 text-xs text-slate-200 font-sans leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-inner"
+            className="w-full bg-slate-950/80 border border-indigo-500/40 rounded-xl p-3 sm:p-3.5 text-xs text-slate-200 font-sans leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all shadow-inner"
             placeholder="Edit the draft before sending..."
           />
 
@@ -181,16 +181,16 @@ export const AiReplyAssistant: React.FC<AiReplyAssistantProps> = ({
           )}
 
           {/* Review & Send Actions */}
-          <div className="flex items-center justify-between pt-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-2 gap-3">
             <button
               onClick={handleDiscard}
-              className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-rose-400 px-3 py-1.5 rounded-lg hover:bg-slate-800 transition-colors"
+              className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-rose-400 px-3 py-1.5 rounded-lg hover:bg-slate-800 transition-colors self-start sm:self-auto"
             >
               <Trash2 className="w-3.5 h-3.5" />
               <span>Discard Draft</span>
             </button>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
               <button
                 onClick={handleGenerate}
                 disabled={isGenerating}
@@ -203,10 +203,10 @@ export const AiReplyAssistant: React.FC<AiReplyAssistantProps> = ({
               <button
                 onClick={handleSend}
                 disabled={isSending || !replyDraft.trim() || sendSuccess}
-                className="flex items-center gap-2 px-5 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-xs shadow-lg shadow-emerald-600/20 active:scale-95 transition-all disabled:opacity-50"
+                className="flex items-center gap-2 px-4 sm:px-5 py-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold text-xs shadow-lg shadow-emerald-600/20 active:scale-95 transition-all disabled:opacity-50"
               >
                 <Send className="w-3.5 h-3.5" />
-                <span>{isSending ? 'Sending via Gmail...' : 'Approve & Send Reply'}</span>
+                <span>{isSending ? 'Sending via Gmail...' : 'Approve & Send'}</span>
               </button>
             </div>
           </div>

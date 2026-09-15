@@ -3,7 +3,8 @@ import {
   Inbox,
   Star,
   Sparkles,
-  Settings
+  Settings,
+  X
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import type { EmailCategory } from '../../types/ai';
@@ -12,20 +13,47 @@ interface SidebarProps {
   selectedCategory: EmailCategory | 'ALL' | 'IMPORTANT';
   onSelectCategory: (cat: EmailCategory | 'ALL' | 'IMPORTANT') => void;
   unreadCount: number;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   selectedCategory,
   onSelectCategory,
   unreadCount,
+  isOpen = false,
+  onClose,
 }) => {
   const location = useLocation();
-
   const isInboxPage = location.pathname === '/' || location.pathname.startsWith('/mail');
 
-  return (
-    <aside className="w-64 border-r border-slate-800 bg-slate-900/50 flex flex-col justify-between p-4 select-none shrink-0 h-[calc(100vh-4rem)] overflow-y-auto">
+  const handleSelect = (cat: EmailCategory | 'ALL' | 'IMPORTANT') => {
+    onSelectCategory(cat);
+    if (onClose) {
+      onClose();
+    }
+  };
+
+  const sidebarContent = (
+    <div className="flex flex-col justify-between h-full p-4 select-none">
       <div className="space-y-6">
+        {/* Mobile Header with Close Button */}
+        <div className="flex items-center justify-between lg:hidden pb-2 border-b border-slate-800">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-indigo-400" />
+            <span className="font-bold text-sm text-white">Mail Navigation</span>
+          </div>
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+              aria-label="Close menu"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
+        </div>
+
         {/* Main Nav */}
         <div>
           <p className="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
@@ -33,7 +61,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </p>
           <nav className="space-y-1">
             <button
-              onClick={() => onSelectCategory('ALL')}
+              onClick={() => handleSelect('ALL')}
               className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                 isInboxPage && selectedCategory === 'ALL'
                   ? 'bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 font-semibold'
@@ -52,7 +80,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
 
             <button
-              onClick={() => onSelectCategory('IMPORTANT')}
+              onClick={() => handleSelect('IMPORTANT')}
               className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                 isInboxPage && selectedCategory === 'IMPORTANT'
                   ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 font-semibold'
@@ -77,7 +105,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
           <nav className="space-y-1">
             <button
-              onClick={() => onSelectCategory('JOB')}
+              onClick={() => handleSelect('JOB')}
               className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                 selectedCategory === 'JOB'
                   ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
@@ -89,7 +117,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
 
             <button
-              onClick={() => onSelectCategory('WORK')}
+              onClick={() => handleSelect('WORK')}
               className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                 selectedCategory === 'WORK'
                   ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
@@ -101,7 +129,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
 
             <button
-              onClick={() => onSelectCategory('PERSONAL')}
+              onClick={() => handleSelect('PERSONAL')}
               className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                 selectedCategory === 'PERSONAL'
                   ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
@@ -113,7 +141,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
 
             <button
-              onClick={() => onSelectCategory('FINANCE')}
+              onClick={() => handleSelect('FINANCE')}
               className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                 selectedCategory === 'FINANCE'
                   ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
@@ -125,7 +153,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
 
             <button
-              onClick={() => onSelectCategory('NEWSLETTER')}
+              onClick={() => handleSelect('NEWSLETTER')}
               className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                 selectedCategory === 'NEWSLETTER'
                   ? 'bg-slate-500/20 text-slate-300 border border-slate-500/30'
@@ -137,7 +165,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
 
             <button
-              onClick={() => onSelectCategory('SUPPORT')}
+              onClick={() => handleSelect('SUPPORT')}
               className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                 selectedCategory === 'SUPPORT'
                   ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
@@ -155,6 +183,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div className="border-t border-slate-800 pt-3 space-y-1">
         <Link
           to="/settings"
+          onClick={() => onClose && onClose()}
           className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
             location.pathname === '/settings'
               ? 'bg-indigo-600/20 text-indigo-400 font-semibold'
@@ -165,6 +194,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <span>Settings & Gemini API</span>
         </Link>
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* Desktop Persistent Sidebar */}
+      <aside className="hidden lg:flex w-64 border-r border-slate-800 bg-slate-900/50 flex-col shrink-0 h-[calc(100vh-4rem)] overflow-y-auto">
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile Drawer Overlay */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden flex">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+            onClick={onClose}
+          />
+
+          {/* Drawer Panel */}
+          <aside className="relative w-72 max-w-[80vw] bg-slate-900 border-r border-slate-800 h-full overflow-y-auto shadow-2xl z-10 animate-in slide-in-from-left duration-200">
+            {sidebarContent}
+          </aside>
+        </div>
+      )}
+    </>
   );
 };

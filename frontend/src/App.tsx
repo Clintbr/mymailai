@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Navbar } from './components/layout/Navbar';
 import { Sidebar } from './components/layout/Sidebar';
@@ -20,12 +20,16 @@ const queryClient = new QueryClient({
 });
 
 function AppContent() {
+  const location = useLocation();
   const [selectedCategory, setSelectedCategory] = useState<EmailCategory | 'ALL' | 'IMPORTANT'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
   const [isComposeOpen, setIsComposeOpen] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const { data: emails = [] } = useEmails();
   const unreadCount = emails.filter((e) => !e.read).length;
+
+  const isSettingsPage = location.pathname === '/settings';
 
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-slate-950 text-slate-100 antialiased">
@@ -34,19 +38,25 @@ function AppContent() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         onComposeClick={() => setIsComposeOpen(true)}
+        onToggleSidebar={() => setIsMobileSidebarOpen((prev) => !prev)}
+        showSidebarToggle={!isSettingsPage}
       />
 
       {/* Main Workspace */}
-      <div className="flex flex-1 overflow-hidden">
-        {/* Left Sidebar */}
-        <Sidebar
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-          unreadCount={unreadCount}
-        />
+      <div className="flex flex-1 overflow-hidden relative">
+        {/* Left Sidebar - Hidden on /settings, responsive drawer on mobile/tablet */}
+        {!isSettingsPage && (
+          <Sidebar
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+            unreadCount={unreadCount}
+            isOpen={isMobileSidebarOpen}
+            onClose={() => setIsMobileSidebarOpen(false)}
+          />
+        )}
 
         {/* Content Area */}
-        <main className="flex-1 flex overflow-hidden">
+        <main className="flex-1 flex overflow-hidden min-w-0">
           <Routes>
             <Route
               path="/"

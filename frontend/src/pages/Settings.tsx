@@ -6,8 +6,10 @@ import {
   Mail,
   Key,
   CheckCircle2,
-  ExternalLink
+  ExternalLink,
+  ArrowLeft
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useMailProviderInfo } from '../hooks/useMail';
 import { useAiStatus } from '../hooks/useAi';
 
@@ -17,8 +19,17 @@ export const Settings: React.FC = () => {
 
   return (
     <div className="flex-1 overflow-y-auto p-8 max-w-4xl mx-auto space-y-8">
-      {/* Header */}
+      {/* Header with Back button */}
       <div>
+        <div className="mb-3">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-xs font-medium text-slate-400 hover:text-indigo-400 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back to Inbox</span>
+          </Link>
+        </div>
         <h1 className="text-xl font-bold text-white flex items-center gap-2.5">
           <SettingsIcon className="w-5 h-5 text-indigo-400" />
           <span>System Settings & Connections</span>
