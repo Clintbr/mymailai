@@ -1,37 +1,42 @@
 package com.mailmanager.config;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * Forwards all non-API, non-static routes to index.html so that the
- * React SPA router (BrowserRouter) can handle client-side navigation.
+ * Forwards all non-API, non-static-asset requests to the React SPA entry
+ * point (index.html), enabling React Router BrowserRouter to handle
+ * client-side navigation even on hard refresh or direct URL access.
  *
- * Without this, refreshing the page on /settings or /mail/:id would
- * return a 404 from Spring Boot instead of serving the SPA.
+ * Dispatch priority in Spring MVC:
+ *   1. @RestController / @Controller with explicit paths (API endpoints)
+ *   2. ResourceHttpRequestHandler (files in classpath:/static/)
+ *   3. This catch-all controller (everything else -> index.html)
  */
 @Controller
 public class SpaForwardingController {
 
     /**
-     * Match every path that is NOT:
-     *   - /api/**        ? REST endpoints
-     *   - /v3/api-docs   ? OpenAPI spec
-     *   - /swagger-ui/** ? Swagger UI
-     *   - /actuator/**   ? Actuator (if ever added)
-     *   - Paths with a file extension (static assets: .js, .css, .png, etc.)
-     *
-     * All matched paths are forwarded to /index.html served from
-     * src/main/resources/static/ (embedded in the JAR at build time).
+     * Single-segment SPA routes, e.g. /settings, /inbox
+     * The regex [^.] excludes paths with a dot (file extensions) so that
+     * missing static assets return 404 instead of serving index.html.
      */
-    @RequestMapping(value = {
-            "/",
-            "/settings",
-            "/mail/{id:[^.]+}",
-            "/{path:^(?!api|v3|swagger-ui|actuator).*}",
-            "/{path:^(?!api|v3|swagger-ui|actuator).*}/**"
-    })
-    public String forwardToSpa() {
+    @RequestMapping(value = "/{path:[^.]*}")
+    public String forwardSingleSegment() {
+        return "forward:/index.html";
+    }
+
+    /**
+     * Multi-segment SPA routes, e.g. /mail/abc123
+     */
+    @RequestMapping(value = "/{path:[^.]*}/**")
+    public String forwardMultiSegment(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        if (uri.startsWith("/api/") || uri.startsWith("/v3/")
+                || uri.startsWith("/swagger-ui") || uri.startsWith("/actuator")) {
+            return null;
+        }
         return "forward:/index.html";
     }
 }

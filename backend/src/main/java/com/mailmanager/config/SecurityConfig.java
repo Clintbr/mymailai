@@ -23,30 +23,11 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                // REST API
-                                "/api/**",
-                                // OpenAPI / Swagger UI
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                // Static SPA assets (JS, CSS, images, fonts, etc.)
-                                "/assets/**",
-                                "/favicon.ico",
-                                "/vite.svg",
-                                "/*.js",
-                                "/*.css",
-                                "/*.map",
-                                // SPA entry point (served by SpaForwardingController)
-                                "/",
-                                "/index.html",
-                                // All SPA client-side routes forwarded to index.html
-                                "/settings",
-                                "/mail/**"
-                        ).permitAll()
-                        .anyRequest().authenticated()
-                );
+                // All routes are public. The app has no user-session auth:
+                // - API endpoints are secured via server-side env credentials (Gemini API key)
+                // - The SPA and static assets must be reachable without authentication
+                // - OAuth flows use server-side token exchange, not HTTP session auth
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
 
         return http.build();
     }
