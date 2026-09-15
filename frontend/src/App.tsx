@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Navbar } from './components/layout/Navbar';
 import { Sidebar } from './components/layout/Sidebar';
+import { Footer } from './components/layout/Footer';
 import { Inbox } from './pages/Inbox';
 import { Email } from './pages/Email';
 import { Settings } from './pages/Settings';
@@ -43,7 +44,7 @@ function AppContent() {
       />
 
       {/* Main Workspace */}
-      <div className="flex flex-1 overflow-hidden relative">
+      <div className="flex flex-1 overflow-hidden relative min-h-0">
         {/* Left Sidebar - Hidden on /settings, responsive drawer on mobile/tablet */}
         {!isSettingsPage && (
           <Sidebar
@@ -72,6 +73,9 @@ function AppContent() {
           </Routes>
         </main>
       </div>
+
+      {/* Responsive Footer */}
+      <Footer />
 
       {/* Outbound Compose Modal */}
       <ComposeModal
