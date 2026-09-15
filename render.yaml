@@ -1,0 +1,37 @@
+# ==============================================================================
+# Render.com Blueprint — AI Mail Manager
+# Docs: https://render.com/docs/blueprint-spec
+# ==============================================================================
+# Deploy this app as a single Docker web service.
+# The Spring Boot backend embeds the built React frontend and serves both the
+# REST API (/api/**) and the SPA from port 8080.
+# ==============================================================================
+
+services:
+  - type: web
+    name: ai-mail-manager
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    # Render sets PORT automatically; Spring Boot reads SERVER_PORT
+    envVars:
+      - key: SERVER_PORT
+        value: 10000          # Render default port
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: GEMINI_API_KEY
+        sync: false           # Set manually in Render dashboard (secret)
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: MAIL_PROVIDER_TYPE
+        value: MOCK           # Change to GMAIL once OAuth creds are configured
+      - key: GOOGLE_CLIENT_ID
+        sync: false           # Set in Render dashboard
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false           # Set in Render dashboard
+      - key: GOOGLE_REDIRECT_URI
+        sync: false           # e.g. https://ai-mail-manager.onrender.com/api/auth/oauth2/callback/google
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false           # e.g. https://ai-mail-manager.onrender.com
+    plan: free                # Change to starter/standard for production
+    region: frankfurt         # Or: oregon, ohio, singapore, virginia
+    healthCheckPath: /api/v1/health

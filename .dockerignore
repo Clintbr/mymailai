@@ -1,0 +1,29 @@
+# Git
+.git
+.gitignore
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Frontend dev artifacts (we copy only what we need)
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+
+# Backend build output (will be rebuilt in Docker)
+backend/target/
+
+# Environment secrets - NEVER in Docker context
+.env
+.env.local
+*.local
+
+# Render / CI config not needed at runtime
+render.yaml
